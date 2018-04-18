@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>五子棋小游戏</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="gobang.css" />
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <div id="container">
+        <div id="board"></div>
+        <div id="right">
+            <h1>五子棋小游戏</h1>
+            <p>轮到
+                <span id="player">黑方</span>下棋</p>
+            <button id="reset">再来一局</button>
+        </div>
+    </div>
+</body>
+<script type="text/javascript">
+    const board_size = 1000
+    const cell_size = 40
+    const cells = board_size / cell_size
+    const board_offset = $("#board").offset()
+    let player = false
+    let over = false
+    let arr = new Array(cells);
+    for (let i = 0; i < cells; i++) {
+        arr[i] = new Array(cells);
+        for (let j = 0; j < cells; j++) {
+            arr[i][j] = 0;
+            $("#board").append('<div class="cell"/>');
+        }
+    };
+    $("#board").click(function (e) {
+        if (over){
+            return
+        }
+        const yuX = (e.pageX - board_offset.left) % cell_size
+        const actualX = yuX < cell_size / 2 ? (e.pageX - board_offset.left - yuX) : (e.pageX - board_offset.left - yuX + cell_size)
+        if (actualX === board_size || !actualX) {
+            return
+        }
+        const yuY = (e.pageY - board_offset.top) % cell_size
+        const actualY = yuY < cell_size / 2 ? (e.pageY - board_offset.top - yuY) : (e.pageY - board_offset.top - yuY + cell_size)
+        if (actualY === board_size || !actualY) {
+            return
+        }
+        const x = actualY / cell_size
+        const y = actualX / cell_size
+        if (arr[x][y]) {
+            return
+        }
+        const piece = $('<div class="piece"/>').css({ left: actualX + 'px', top: actualY + 'px' })
+        if (player) {
+            piece.css("background-color", "white")
+            arr[x][y] = 2
+            $("#player").text("黑方")
+        } else {
+            arr[x][y] = 1
+            $("#player").text("白方")
+        }
+        $(".piece.opacity:last").remove()
+        $("#board").append(piece)
+        player = !player
+        // 横向
+        for (let i = 1; i < cells - 1; i++) {
+            let flag = 0
+            let length = 0
+            for (let j = 1; j < cells - 1; j++) {
+                if (arr[i][j] === flag) {
+                    if (arr[i][j]) {
+                        length += 1
+                    } else {
+                        length = 0.5
+                    }
+                } else {
+                    if (!flag) {
+                        length = 1.5
+                    } else {
+                        if (arr[i][j]) {
+                            length = 1
+                        } else {
+                            length += 0.5
+                        }
+                    }
+                    if (length >= 5) {
+                        if (flag === 1) {
+                            setTimeout(() => {
+                                alert("黑方胜!")
+                            }, 0);
+                        } else {
+                            setTimeout(() => {
+                                alert("白方胜!")
+                            }, 0);
+                        }
+                        over = true
+                        return
+                    }
+                    flag = arr[i][j]
+                }
+            }
+        }
+        // 竖向
+        for (let j = 1; j < cells - 1; j++) {
+            let flag = 0
+            let length = 0
+            for (let i = 1; i < cells - 1; i++) {
+                if (arr[i][j] === flag) {
+                    if (arr[i][j]) {
+                        length += 1
+                    } else {
+                        length = 0.5
+                    }
+                } else {
+                    if (!flag) {
+                        length = 1.5
+                    } else {
+                        if (arr[i][j]) {
+                            length = 1
+                        } else {
+                            length += 0.5
+                        }
+                    }
+                    if (length >= 5) {
+                        if (flag === 1) {
+                            setTimeout(() => {
+                                alert("黑方胜!")
+                            }, 0);
+                        } else {
+                            setTimeout(() => {
+                                alert("白方胜!")
+                            }, 0);
+                        }
+                        over = true
+                        return
+                    }
+                    flag = arr[i][j]
+                }
+            }
+        }
+        // 45度
+        for (let x = 1; x < cells - 1; x++) {
+            let i = x
+            let j = 1
+            let flag = 0
+            let length = 0
+            while (i > 0) {
+                if (arr[i][j] === flag) {
+                    if (arr[i][j]) {
+                        length += 1
+                    } else {
+                        length = 0.5
+                    }
+                } else {
+                    if (!flag) {
+                        length = 1.5
+                    } else {
+                        if (arr[i][j]) {
+                            length = 1
+                        } else {
+                            length += 0.5
+                        }
+                    }
+                    if (length >= 5) {
+                        if (flag === 1) {
+                            setTimeout(() => {
+                                alert("黑方胜!")
+                            }, 0);
+                        } else {
+                            setTimeout(() => {
+                                alert("白方胜!")
+                            }, 0);
+                        }
+                        over = true
+                        return
+                    }
+                    flag = arr[i][j]
+                }
+                i -= 1
+                j += 1
+            }
+        }
+        for (let y = 1; y < cells - 1; y++) {
+            let j = y
+            let i = cells - 2
+            let flag = 0
+            let length = 0
+            while (j < cells - 1) {
+                if (arr[i][j] === flag) {
+                    if (arr[i][j]) {
+                        length += 1
+                    } else {
+                        length = 0.5
+                    }
+                } else {
+                    if (!flag) {
+                        length = 1.5
+                    } else {
+                        if (arr[i][j]) {
+                            length = 1
+                        } else {
+                            length += 0.5
+                        }
+                    }
+                    if (length >= 5) {
+                        if (flag === 1) {
+                            setTimeout(() => {
+                                alert("黑方胜!")
+                            }, 0);
+                        } else {
+                            setTimeout(() => {
+                                alert("白方胜!")
+                            }, 0);
+                        }
+                        over = true
+                        return
+                    }
+                    flag = arr[i][j]
+                }
+                i -= 1
+                j += 1
+            }
+        }
+        // 135度
+        for (let x = cells - 1; x > 0; x--) {
+            let i = x
+            let j = 1
+            let flag = 0
+            let length = 0
+            while (i < cells) {
+                if (arr[i][j] === flag) {
+                    if (arr[i][j]) {
+                        length += 1
+                    } else {
+                        length = 0.5
+                    }
+                } else {
+                    if (!flag) {
+                        length = 1.5
+                    } else {
+                        if (arr[i][j]) {
+                            length = 1
+                        } else {
+                            length += 0.5
+                        }
+                    }
+                    if (length >= 5) {
+                        if (flag === 1) {
+                            setTimeout(() => {
+                                alert("黑方胜!")
+                            }, 0);
+                        } else {
+                            setTimeout(() => {
+                                alert("白方胜!")
+                            }, 0);
+                        }
+                        over = true
+                        return
+                    }
+                    flag = arr[i][j]
+                }
+                i += 1
+                j += 1
+            }
+        }
+        for (let y = 1; y < cells - 1; y++) {
+            let j = y
+            let i = 1
+            let flag = 0
+            let length = 0
+            while (j < cells - 1) {
+                if (arr[i][j] === flag) {
+                    if (arr[i][j]) {
+                        length += 1
+                    } else {
+                        length = 0.5
+                    }
+                } else {
+                    if (!flag) {
+                        length = 1.5
+                    } else {
+                        if (arr[i][j]) {
+                            length = 1
+                        } else {
+                            length += 0.5
+                        }
+                    }
+                    if (length >= 5) {
+                        if (flag === 1) {
+                            setTimeout(() => {
+                                alert("黑方胜!")
+                            }, 0);
+                        } else {
+                            setTimeout(() => {
+                                alert("白方胜!")
+                            }, 0);
+                        }
+                        over = true
+                        return
+                    }
+                    flag = arr[i][j]
+                }
+                i += 1
+                j += 1
+            }
+        }
+    })
+    let hoverX = 0
+    let hoverY = 0
+    $("#board").mousemove(function (e) {
+        if (over){
+            return
+        }
+        const yuX = (e.pageX - board_offset.left) % cell_size
+        const actualX = yuX < cell_size / 2 ? (e.pageX - board_offset.left - yuX) : (e.pageX - board_offset.left - yuX + cell_size)
+        if (actualX === board_size || !actualX) {
+            return
+        }
+        const yuY = (e.pageY - board_offset.top) % cell_size
+        const actualY = yuY < cell_size / 2 ? (e.pageY - board_offset.top - yuY) : (e.pageY - board_offset.top - yuY + cell_size)
+        if (actualY === board_size || !actualY) {
+            return
+        }
+        const x = actualY / cell_size
+        const y = actualX / cell_size
+        if (arr[x][y]) {
+            return
+        }
+        if (actualX === hoverX && actualY === hoverY){
+            return
+        }
+        hoverX = actualX
+        hoverY = actualY
+        const piece = $('<div class="piece opacity"/>').css({ left: actualX + 'px', top: actualY + 'px' })
+        if (player) {
+            piece.css("background-color", "white")
+        }
+        $(".piece.opacity:last").remove()
+        $("#board").append(piece)
+    })
+    $("#board").mouseleave(function(){
+        $(".piece.opacity:last").remove()
+        hoverX = 0
+        hoverY = 0
+    })
+    $("#reset").click(function(){
+        $(".piece").remove()
+        over = false
+        for (let i = 0; i < cells; i++) {
+            for (let j = 0; j < cells; j++) {
+                arr[i][j] = 0;
+            }
+        };
+        hoverX = 0
+        hoverY = 0
+    })
+</script>
+
+</html>
