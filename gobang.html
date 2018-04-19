@@ -72,6 +72,7 @@
         }
         $(".piece.opacity:last").remove()
         $("#board").append(piece)
+        player = !player
         for (let dt of directions){
             let length = 1
             for (let d of dt){
@@ -87,12 +88,11 @@
                 }
             }
             if (length >= 5){
-                setTimeout(alert(`${player ? '白方' :'黑方'}胜`), 0)
+                setTimeout(alert(`${player ? '黑方' :'白方'}胜`), 0)
                 over = true
                 return
             }
         }
-        player = !player
     })
     let hoverX = 0
     let hoverY = 0
