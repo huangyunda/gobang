@@ -28,16 +28,22 @@
     const board_offset = $("#board").offset()
     let player = false
     let over = false
-    let arr = new Array(cells);
+    let arr = new Array(cells)
     for (let i = 0; i < cells; i++) {
-        arr[i] = new Array(cells);
+        arr[i] = new Array(cells)
         for (let j = 0; j < cells; j++) {
             arr[i][j] = 0;
             $("#board").append('<div class="cell"/>');
         }
     };
+    const directions = [
+        [[-1, 0], [1, 0]],
+        [[0, -1], [0, 1]],
+        [[-1, -1], [1, 1]],
+        [[-1, 1], [1, -1]]
+    ]
     $("#board").click(function (e) {
-        if (over){
+        if (over) {
             return
         }
         const yuX = (e.pageX - board_offset.left) % cell_size
@@ -66,254 +72,32 @@
         }
         $(".piece.opacity:last").remove()
         $("#board").append(piece)
+        for (let dt of directions){
+            let length = 1
+            for (let d of dt){
+                let newX = x+d[0]
+                let newY = y+d[1]
+                while (arr[newX][newY] === arr[x][y]){
+                    length += 1
+                    newX += d[0]
+                    newY += d[1]
+                }
+                if (arr[newX][newY] === 0){
+                    length += 0.5
+                }
+            }
+            if (length >= 5){
+                setTimeout(alert(`${player ? '白方' :'黑方'}胜`), 0)
+                over = true
+                return
+            }
+        }
         player = !player
-        // 横向
-        for (let i = 1; i < cells - 1; i++) {
-            let flag = 0
-            let length = 0
-            for (let j = 1; j < cells - 1; j++) {
-                if (arr[i][j] === flag) {
-                    if (arr[i][j]) {
-                        length += 1
-                    } else {
-                        length = 0.5
-                    }
-                } else {
-                    if (!flag) {
-                        length = 1.5
-                    } else {
-                        if (arr[i][j]) {
-                            length = 1
-                        } else {
-                            length += 0.5
-                        }
-                    }
-                    if (length >= 5) {
-                        if (flag === 1) {
-                            setTimeout(() => {
-                                alert("黑方胜!")
-                            }, 0);
-                        } else {
-                            setTimeout(() => {
-                                alert("白方胜!")
-                            }, 0);
-                        }
-                        over = true
-                        return
-                    }
-                    flag = arr[i][j]
-                }
-            }
-        }
-        // 竖向
-        for (let j = 1; j < cells - 1; j++) {
-            let flag = 0
-            let length = 0
-            for (let i = 1; i < cells - 1; i++) {
-                if (arr[i][j] === flag) {
-                    if (arr[i][j]) {
-                        length += 1
-                    } else {
-                        length = 0.5
-                    }
-                } else {
-                    if (!flag) {
-                        length = 1.5
-                    } else {
-                        if (arr[i][j]) {
-                            length = 1
-                        } else {
-                            length += 0.5
-                        }
-                    }
-                    if (length >= 5) {
-                        if (flag === 1) {
-                            setTimeout(() => {
-                                alert("黑方胜!")
-                            }, 0);
-                        } else {
-                            setTimeout(() => {
-                                alert("白方胜!")
-                            }, 0);
-                        }
-                        over = true
-                        return
-                    }
-                    flag = arr[i][j]
-                }
-            }
-        }
-        // 45度
-        for (let x = 1; x < cells - 1; x++) {
-            let i = x
-            let j = 1
-            let flag = 0
-            let length = 0
-            while (i > 0) {
-                if (arr[i][j] === flag) {
-                    if (arr[i][j]) {
-                        length += 1
-                    } else {
-                        length = 0.5
-                    }
-                } else {
-                    if (!flag) {
-                        length = 1.5
-                    } else {
-                        if (arr[i][j]) {
-                            length = 1
-                        } else {
-                            length += 0.5
-                        }
-                    }
-                    if (length >= 5) {
-                        if (flag === 1) {
-                            setTimeout(() => {
-                                alert("黑方胜!")
-                            }, 0);
-                        } else {
-                            setTimeout(() => {
-                                alert("白方胜!")
-                            }, 0);
-                        }
-                        over = true
-                        return
-                    }
-                    flag = arr[i][j]
-                }
-                i -= 1
-                j += 1
-            }
-        }
-        for (let y = 1; y < cells - 1; y++) {
-            let j = y
-            let i = cells - 2
-            let flag = 0
-            let length = 0
-            while (j < cells - 1) {
-                if (arr[i][j] === flag) {
-                    if (arr[i][j]) {
-                        length += 1
-                    } else {
-                        length = 0.5
-                    }
-                } else {
-                    if (!flag) {
-                        length = 1.5
-                    } else {
-                        if (arr[i][j]) {
-                            length = 1
-                        } else {
-                            length += 0.5
-                        }
-                    }
-                    if (length >= 5) {
-                        if (flag === 1) {
-                            setTimeout(() => {
-                                alert("黑方胜!")
-                            }, 0);
-                        } else {
-                            setTimeout(() => {
-                                alert("白方胜!")
-                            }, 0);
-                        }
-                        over = true
-                        return
-                    }
-                    flag = arr[i][j]
-                }
-                i -= 1
-                j += 1
-            }
-        }
-        // 135度
-        for (let x = cells - 1; x > 0; x--) {
-            let i = x
-            let j = 1
-            let flag = 0
-            let length = 0
-            while (i < cells) {
-                if (arr[i][j] === flag) {
-                    if (arr[i][j]) {
-                        length += 1
-                    } else {
-                        length = 0.5
-                    }
-                } else {
-                    if (!flag) {
-                        length = 1.5
-                    } else {
-                        if (arr[i][j]) {
-                            length = 1
-                        } else {
-                            length += 0.5
-                        }
-                    }
-                    if (length >= 5) {
-                        if (flag === 1) {
-                            setTimeout(() => {
-                                alert("黑方胜!")
-                            }, 0);
-                        } else {
-                            setTimeout(() => {
-                                alert("白方胜!")
-                            }, 0);
-                        }
-                        over = true
-                        return
-                    }
-                    flag = arr[i][j]
-                }
-                i += 1
-                j += 1
-            }
-        }
-        for (let y = 1; y < cells - 1; y++) {
-            let j = y
-            let i = 1
-            let flag = 0
-            let length = 0
-            while (j < cells - 1) {
-                if (arr[i][j] === flag) {
-                    if (arr[i][j]) {
-                        length += 1
-                    } else {
-                        length = 0.5
-                    }
-                } else {
-                    if (!flag) {
-                        length = 1.5
-                    } else {
-                        if (arr[i][j]) {
-                            length = 1
-                        } else {
-                            length += 0.5
-                        }
-                    }
-                    if (length >= 5) {
-                        if (flag === 1) {
-                            setTimeout(() => {
-                                alert("黑方胜!")
-                            }, 0);
-                        } else {
-                            setTimeout(() => {
-                                alert("白方胜!")
-                            }, 0);
-                        }
-                        over = true
-                        return
-                    }
-                    flag = arr[i][j]
-                }
-                i += 1
-                j += 1
-            }
-        }
     })
     let hoverX = 0
     let hoverY = 0
     $("#board").mousemove(function (e) {
-        if (over){
+        if (over) {
             return
         }
         const yuX = (e.pageX - board_offset.left) % cell_size
@@ -331,7 +115,7 @@
         if (arr[x][y]) {
             return
         }
-        if (actualX === hoverX && actualY === hoverY){
+        if (actualX === hoverX && actualY === hoverY) {
             return
         }
         hoverX = actualX
@@ -343,12 +127,12 @@
         $(".piece.opacity:last").remove()
         $("#board").append(piece)
     })
-    $("#board").mouseleave(function(){
+    $("#board").mouseleave(function () {
         $(".piece.opacity:last").remove()
         hoverX = 0
         hoverY = 0
     })
-    $("#reset").click(function(){
+    $("#reset").click(function () {
         $(".piece").remove()
         over = false
         for (let i = 0; i < cells; i++) {
